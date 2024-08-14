@@ -4,60 +4,46 @@ import './APOD.css'
 
 const DATA_URL = 'https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY';
 
-{/* Funcion donde desplegar la info de la imagen */}
-const Apod = ({date, hdurl, explanation}) => {
-    return (
-        <div className='Apod--container'>
-            <h2 className='Apod--date'>{date}</h2>
-            <img src={hdurl} />
-            <p className='Apod--explanation'>{explanation}</p>
-        </div>
-    )
-}
 
-
-const Apods = () => {
-    const [apods, setApods] = useState([])
+const Apod = () => {
+    const [apod, setApod] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchApods();
+        const fetchApod = async () => {
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setApod(data);
+            } catch (err) {
+                setError(err);
+            } 
+        };
+
+        fetchApod();
     }, []);
 
-    const fetchApods = () => {
-        fetch(DATA_URL)
-            .then(res => res.json())
-            .then(data => setApods(data.hdurl))
-            .catch(err => console.error(err))
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
     }
 
-    console.log(apods);
-    {/*     return (
-        <>
-            <h2>APOD</h2>
-            {
-                apods.length !== 0 
-                    ? 
-                    apods.map((apod, index) => (
-                        <Apod key={index} {...apod} />
-                    ))
-                    :
-                    <Progress/>
-            }
-            
-        </>
-    )
-*/}
+    return (
+        <div className='container'>
+            <h1>Foto Astronomica del dia</h1>
+            {apod && (
+                <div>
+                    <h2>{apod.title}</h2>
+                    <p>{apod.date}</p>
+                    <img src={apod.url} alt={apod.title} style={{ maxWidth: '100%', height: 'auto' }} />
+                    <p>{apod.explanation}</p>
+                </div>
+            )}
+        </div>
+    );
+};
 
-}
-
-{/* 
-const Apod = () => (
-    <>
-        <h1>Estamos en APOD</h1>
-        <h2>Esto esta muy complicado </h2>
-        <p><small>Help</small></p>
-    </>
-)
-*/}
-
-export default Apods;
+export default Apod;

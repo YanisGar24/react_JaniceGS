@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Navbar from './Components/Navbar.jsx'
 import Main from './Components/Main.jsx'
 import Astros from './Components/Astros.jsx'
-import Apod from './Components/APOD.jsx';
+import Apod from './Components/Apod.jsx';
 
 import About from './Components/About.jsx';
 
